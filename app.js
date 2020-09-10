@@ -1,48 +1,48 @@
 //Define UI variables
-const form = document.querySelector("#task-form");  //Form that holds our input field and add task btn
-const taskList = document.querySelector(".collection");  //Our ul list
+const form = document.querySelector("#task-form");
+const taskList = document.querySelector(".collection");  //UL element
 const clearBtn = document.querySelector(".clear-tasks");  
 const filter = document.querySelector("#filter");  //Filter input field (dynamic; no filter btn)
 const taskInput = document.querySelector("#task"); 
 
-//Load all event listeners function call
+//Load all event listeners (function call)
 loadEventListeners();
 
-//Load all event listeners function code
+//Load all event listeners (function code)
 function loadEventListeners(){
-    //DOM Load event; will fire off as soon as the DOM is loaded
-    document.addEventListener("DOMContentLoaded", getTasks);  //When DOM is loaded, getTasks from localStorage
+    //DOM Load event
+    document.addEventListener("DOMContentLoaded", getTasks);  //getTasks fetches from localStorage
     //Add task event
-    form.addEventListener("submit", addTask);  //Submit-type event listener on form; addTask function call
+    form.addEventListener("submit", addTask);
     //Remove task event
-    taskList.addEventListener("click", removeTask);  //Remove-type event listener on ul list; removeTask function call
+    taskList.addEventListener("click", removeTask);
     //Clear task event
     clearBtn.addEventListener("click", clearTasks);
     filter.addEventListener("keyup", filterTasks);
 }
 
-//Get tasks from local storage upon DOM load (Function code)
+//Get tasks from local storage
 function getTasks(){
     let tasks;
-    if (localStorage.getItem("tasks") === null){  //If there are no items, and therefor no array...
+    if (localStorage.getItem("tasks") === null){  //If there are no tasks, then nothing has prompted creation of the storage array yet, in which case...
         tasks = [];  //...Create an array
     }   else {
-        tasks = JSON.parse(localStorage.getItem("tasks"));  //Get all items from array; parse back into original form
+        tasks = JSON.parse(localStorage.getItem("tasks"));  //Get the array; parse back into a JavaScript object
     }
 
-    //If there are items to fetch, we will need to create their li elements in order to display them in the UI, just like we did with the addTask function. We will use a forEach to perform each element's recreation.
-    tasks.forEach(function(task){  //Pass in task as our iterator variable; it will hold our value each loop
+    //Generate the display elements for each task
+    tasks.forEach(function(task){ 
         //Create li element
         const li = document.createElement("li");
-        //Add the collection-item classname to newly created li element
+        //Add a classname
         li.className = "collection-item";
-        //Create a text node to display the text value and then append it to the li 
-        li.appendChild(document.createTextNode(task));  //Pass in the source of the text value
-        //Create the link element for deleting the task
+        //Create a text node; append it to the li 
+        li.appendChild(document.createTextNode(task));  
+        //Create link element for deleting the task 
         const link = document.createElement("a");
-        //Add deletion link element classes
+        //Add classes
         link.className = "delete-item secondary-content";
-        //Add the HTML for the deletion icon (i.e. turn the link into an icon)
+        //Turn the delete link into an icon
         link.innerHTML = "<i class='fa fa-remove'></li>";
         //Append the new iconized link to the li
         li.appendChild(link);
@@ -51,92 +51,89 @@ function getTasks(){
     });
 }
 
-//Add task function code
-function addTask(e) {  //Passing in event object
+//Add task (function code)
+function addTask(e) {  
     if(taskInput.value === "") { 
-        alert("Add a task");
+        alert("Please type in a task"); 
     }
 
     //Create li element
     const li = document.createElement("li");
-    //Add the collection-item classname to newly created li element
+    //Add a classname
     li.className = "collection-item";
-    //Create a text node to display our input value and then append it to the li 
+    //Create a text node; append it to the li
     li.appendChild(document.createTextNode(taskInput.value));
-    //Create the link element for deleting the task
+    //Create link element for deleting the task
     const link = document.createElement("a");
-    //Add deletion link element classes
+    //Add classes
     link.className = "delete-item secondary-content";
-    //Add the HTML for the deletion icon (i.e. turn the link into an icon)
+    //Turn the delete link into an icon
     link.innerHTML = "<i class='fa fa-remove'></li>";
     //Append the new iconized link to the li
     li.appendChild(link);
-
     //Append the li to the ul
     taskList.appendChild(li);
 
     //Store in local storage (function call)
-    storeTaskInLocalStorage(taskInput.value);  //Passing in value to store
+    storeTaskInLocalStorage(taskInput.value);
 
     //Clear input field for fresh text
     taskInput.value = "";
 
-
-    //Prevent the default behavior of the submit event, which would reload the page
+    //Prevent default submit event behavior, which would reload the page
     e.preventDefault();
 }
 
 //Store inputted task in local storage (function code)
-function storeTaskInLocalStorage(task){  //Pass in our function variable
-    let tasks;  //Use our function variable
-    if(localStorage.getItem("tasks") === null){  //Check if at least one task has already been stored, if not...
-        tasks = [];  //...then create the array for storing tasks
-    } else {  //If array is holding at least one item, then it obviously already exists, so...
-        tasks = JSON.parse(localStorage.getItem("tasks"));  //Get array of name "tasks"; parse items back into regular form from strings
+function storeTaskInLocalStorage(task){ 
+    let tasks;  
+    if(localStorage.getItem("tasks") === null){  
+        tasks = [];  
+    } else {  
+        tasks = JSON.parse(localStorage.getItem("tasks"));  
     }
 
-    //Use push method to insert new task into array
+    //Push new method on to array for storage
     tasks.push(task);
 
-    //Parsing tasks array back into strings & setting in local storage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    //Note that the above passes "tasks" in first as a string because we're specifying what the object will be called in local storage, and then the second use of tasks is passed in as a variable because it is the actual array of values we want parsed before the storage occurs. Normally they would both be in quotes as follows: localStorage.setItem('myCat', 'Tom');
+    //Parse array into strings (JSON)
+    localStorage.setItem("tasks", JSON.stringify(tasks));    
 }
 
-//Remove task function code
+//Remove task (function code)
 function removeTask(e) {
-    //Target of click event should be the icon; parent should be link element. Use if statement to confirm the right element is selected, then use get parent of parent to target li element  
-    if(e.target.parentElement.classList.contains("delete-item")) {  //Condition confirms whether we have correct target
-        if(confirm("Are you sure?")) {  //Asks the user if they are certain they want to remove the task from the list
+    ///Target of event is icon; get parent of parent to target li element
+    if(e.target.parentElement.classList.contains("delete-item")) {  //Condition confirms whether we have correct element
+        if(confirm("Are you sure?")) { 
             e.target.parentElement.parentElement.remove();
 
-            //Remove task from local storage as well
+            //Remove task from local storage (function call)
             removeTaskFromLocalStorage(e.target.parentElement.parentElement);
         }
     }
 }
 
-//Remove from local storage
+//Remove from local storage (function code)
 function removeTaskFromLocalStorage(taskItem){
     let tasks;
-    if(localStorage.getItem("tasks") === null){  //Check if at least one task has already been stored, if not...
-        tasks = [];  //...then create the array for storing tasks
-    } else {  //If array is holding at least one item, then it obviously already exists, so...
-        tasks = JSON.parse(localStorage.getItem("tasks"));  //Get array of name "tasks"; parse items back into regular form from strings so we can find the thing to delete
+    if(localStorage.getItem("tasks") === null){
+        tasks = [];
+    } else { 
+        tasks = JSON.parse(localStorage.getItem("tasks"));
     }
 
-    //Create forEach loop for iterating through array until item to delete is found
-    tasks.forEach(function(task, index){  //Task holds an item from the array each loop; index holds item's location
-        if(taskItem.textContent === task){  //Comparing text of taskItem to delete with that of current item in task
-            tasks.splice(index, 1);  //If matching, then we have the right one. Get its index & splice item out.
+    //Iterate through array to find item to be deleted
+    tasks.forEach(function(task, index){ 
+        if(taskItem.textContent === task){  //Comparing an array task with task to be deleted
+            tasks.splice(index, 1);  //If matching, then get array task index & splice out.
         }
     });
 
-    //Now set remaining items back into local storage
+    //Set remaining items back into local storage
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-//Clear tasks function code
+//Clear tasks button (function code)
 function clearTasks() {
     while(taskList.firstChild) {  //Will evaluate to true as long as there is still at least one task in the list
         taskList.removeChild(taskList.firstChild);
@@ -148,17 +145,17 @@ function clearTasks() {
 
 //Clear tasks from local storage (function code)
 function clearTasksFromLocalStorage(){
-    localStorage.clear();  //Call the clear method on the localStorage object
+    localStorage.clear(); 
 }
 
-//Filter tasks function code
+//Filter tasks (function code)
 function filterTasks(e) {
-    const text = e.target.value.toLowerCase();  //Target is filter input field; keys typed will be captured in variable "text". Is converted to lowercase to avert case matching issues
+    const text = e.target.value.toLowerCase();  //Target is filter input field; input will be converted to lowercase to avoid case matching issues
     
-    //Get all items as node list and loop through using forEach to find if filter criteria matches any
-    document.querySelectorAll(".collection-item").forEach(function(task){ //Passing in anon. function & iterator var 
+    //Loop through nodelist to determine if filter criteria matches any tasks
+    document.querySelectorAll(".collection-item").forEach(function(task){  
         const item = task.firstChild.textContent;
-        if(item.toLowerCase().indexOf(text) != -1) {  //Convert items to lowercase to avert case matching issues
+        if(item.toLowerCase().indexOf(text) != -1) {  //Convert existing tasks to lowercase to avert case matching issues
             task.style.display = "block";
         } else {
             task.style.display = "none";
