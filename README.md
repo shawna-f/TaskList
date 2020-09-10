@@ -18,7 +18,5 @@ This web app and the technologies used for its display elements should work in a
 * Download the TaskList repository containing the index.html and app.js files
 * Double-click the index.html file to open it
   * Alternatively, right-click and select Open, or Open With to choose your preferred web browser
-
-
- *Credits*  
- Thanks to Brad Traversy from Udemy.com for teaching me how to make this!
+ 
+ 
